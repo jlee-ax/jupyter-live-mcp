@@ -107,7 +107,7 @@ uv pip install 'jupyterlab>=4,<5' 'jupyter-collaboration>=4,<5' 'ipykernel>=6,<8
 uv run --no-sync pytest tests/test_server.py
 ```
 
-현재 로컬 QA 플랫폼은 macOS입니다. Windows와 Linux의 동작은 아직 검증 완료로 주장하지 않습니다. GitHub Actions에는 깨끗한 환경에서의 정적 검사·단위 테스트·wheel 빌드와 별도의 Linux 통합 테스트 작업을 정의했습니다. CI 정의의 존재는 CI 실행 성공을 의미하지 않습니다.
+현재 로컬 QA 플랫폼은 macOS입니다. Windows와 Linux의 동작은 아직 검증 완료로 주장하지 않습니다. `ci/github-actions.yml`은 깨끗한 환경에서의 정적 검사·단위 테스트·wheel 빌드와 별도의 Linux 통합 테스트를 위한 템플릿입니다. 자동 CI를 활성화하려면 GitHub의 workflow 쓰기 권한이 있는 연결로 이 파일을 `.github/workflows/ci.yml`에 배치하세요. 현재 연결에는 해당 권한이 없어 템플릿으로 제공합니다.
 
 ## 라이선스와 기반 프로젝트
 
