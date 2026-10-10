@@ -1,0 +1,11 @@
+{
+  "name": "jlee-jupyter-live",
+  "plugins": [
+    {
+      "name": "jupyter-live-mcp",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Data & Analytics"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jupyter-live-mcp"
+version = "0.1.0"
+description = "Choose your Python environment before starting a live Jupyter MCP session."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "jlee-ax"}]
+dependencies = [
+  "anyio>=4.5,<5",
+  "mcp>=1.29,<2",
+  "pydantic>=2.10,<3",
+  "platformdirs>=4,<5",
+  "httpx2[http2,brotli,zstd]>=2.13,<3",
+  "packaging>=24,<27",
+  "typer>=0.15,<1",
+]
+
+[project.urls]
+Repository = "https://github.com/jlee-ax/jupyter-live-mcp"
+
+[project.scripts]
+jupyter-live-mcp = "jupyter_live_mcp.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.14,<1", "basedpyright>=1.30,<2", "build>=1.2,<2"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jupyter_live_mcp"]
+
+[tool.basedpyright]
+typeCheckingMode = "all"
+pythonVersion = "3.11"
+pythonPlatform = "All"
+include = ["src", "tests"]
+exclude = ["**/__pycache__", "**/.venv"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "ISC001", "D203", "D213"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "PLR2004", "SLF001", "D", "ARG", "INP001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-config --strict-markers"
+markers = ["integration: starts isolated Jupyter and MCP processes"]
+

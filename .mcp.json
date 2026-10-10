@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "jupyterLive": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/jlee-ax/jupyter-live-mcp@main",
+        "jupyter-live-mcp",
+        "serve"
+      ]
+    }
+  }
+}
