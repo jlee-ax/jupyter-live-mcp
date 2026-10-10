@@ -4,7 +4,7 @@ Jupyter Live MCP는 선택한 Python 인터프리터에서 JupyterLab과 노트�
 
 ## 설치
 
-Python 3.11 이상, `uv`, Codex의 로컬 MCP 실행 기능이 필요합니다.
+Python 3.11 이상과 `uv`가 필요합니다. 아래 명령은 Codex CLI에 로컬 MCP 서버를 직접 등록하는 방법입니다.
 
 ### GitHub에서 설치
 
@@ -15,7 +15,7 @@ uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
 
-저장소에는 Codex 호환 플러그인 선언 `.codex-plugin/plugin.json`, MCP 실행 설정 `.mcp.json`, `skills/jupyter/SKILL.md`, 마켓플레이스 선언 `.agents/plugins/marketplace.json`도 포함됩니다. 플러그인 실행 설정은 `uvx`로 GitHub 소스의 컨트롤러를 실행합니다. 일반 MCP 등록과 플러그인 설치 중 한 경로를 선택해 중복 등록을 피하세요.
+Codex 플러그인 설치 경로에서는 `.codex-plugin/plugin.json`이 MCP 설정과 스킬 경로를 선언합니다. `.mcp.json`은 `uvx`로 같은 컨트롤러를 실행하므로, `codex mcp add`를 별도로 실행하지 않습니다.
 
 ### 로컬 소스에서 설치
 
@@ -71,14 +71,33 @@ JupyterLab은 인증을 사용하는 루프백 주소에 바인딩됩니다. 토
 
 ## 런타임 구성
 
-환경 선택을 담당하는 컨트롤러는 `uv`가 관리하는 도구 환경에서 실행됩니다. MCP 연결 시에는 컨트롤러만 시작합니다. Codex가 사용자에게 Python 환경을 선택받은 뒤, 선택한 인터프리터로 JupyterLab과 MCP 백엔드를 시작합니다.
+`uv tool install`은 환경 선택 컨트롤러를 `uv`의 도구 환경에 설치합니다. `codex mcp add`는 그 컨트롤러의 시작 명령을 Codex에 등록합니다. 연결 시 Codex는 `jupyter-live-mcp serve`를 로컬 프로세스로 실행하고 표준 입력·출력(STDIO)으로 MCP 메시지를 주고받습니다. 이때 JupyterLab이나 커널은 아직 시작되지 않습니다. 플러그인 설치 방식에서는 `.mcp.json`에 정의된 `uvx` 명령이 같은 컨트롤러를 시작합니다. [Codex의 MCP 연결 문서](https://developers.openai.com/codex/mcp)에도 로컬 STDIO 서버의 등록 방식이 설명되어 있습니다.
 
-| 환경 | 역할 |
-| --- | --- |
-| uv가 관리하는 도구 환경 | 환경 탐색·검사·선택과 MCP 연결 관리 |
-| 사용자가 선택한 분석 환경 | JupyterLab, Datalayer MCP 백엔드, 실제 노트북 셀 실행 |
+```mermaid
+flowchart LR
+    subgraph ToolEnv["uv 도구 환경"]
+        Controller["환경 선택 컨트롤러<br/>jupyter-live-mcp serve"]
+    end
 
-프로젝트의 `.venv`·`venv`, `VIRTUAL_ENV`·`CONDA_PREFIX`, Conda 환경 목록, 현재/PATH의 Python을 탐색합니다. 목록에 없는 환경도 Python 실행 파일의 절대 경로로 지정할 수 있습니다. 선택한 경로의 심볼릭 링크를 유지하고, 시작할 때 실제 커널의 실행 파일과 `sys.prefix`를 검증합니다.
+    subgraph AnalysisEnv["선택한 Python 환경"]
+        Lab["JupyterLab / Jupyter Server<br/>127.0.0.1"]
+        Backend["Datalayer Jupyter MCP 서버"]
+        Kernel["노트북 커널"]
+    end
+
+    User["사용자"] -->|"Python 선택"| Codex["Codex"]
+    Codex <-->|"MCP STDIO"| Controller
+    Controller -->|"선택 후 시작"| Lab
+    Controller <-->|"MCP STDIO"| Backend
+    Backend <-->|"토큰 인증 로컬 HTTP"| Lab
+    Lab -->|"선택한 Python으로 시작"| Kernel
+```
+
+두 MCP 연결은 STDIO를 사용하므로 MCP용 네트워크 포트를 열지 않습니다. 노트북 작업의 HTTP 통신은 백엔드와 루프백 주소의 Jupyter Server 사이에서 이루어집니다.
+
+처음에는 컨트롤러의 환경 탐색·검사 도구만 Codex에 노출됩니다. Codex가 후보를 보여주고 사용자의 선택을 받으면, 컨트롤러가 해당 Python의 의존성을 검사한 뒤 `start_session`에서 JupyterLab을 실행합니다. 커널 설정과 Datalayer MCP 백엔드도 같은 Python 인터프리터를 사용합니다. 백엔드는 토큰으로 인증된 로컬 HTTP 연결을 통해 Jupyter에 접근하고, 컨트롤러는 그 노트북 도구를 Codex에 전달합니다.
+
+프로젝트의 `.venv`·`venv`, `VIRTUAL_ENV`·`CONDA_PREFIX`, Conda 환경 목록, 현재/PATH의 Python을 탐색합니다. 목록에 없는 환경도 Python 실행 파일의 절대 경로로 지정할 수 있습니다. 컨트롤러는 선택한 경로의 심볼릭 링크를 유지하고, 시작 직후 커널의 `sys.executable`과 `sys.prefix`가 선택한 환경과 일치하는지 검증합니다.
 
 ## 세션 보존과 종료
 
