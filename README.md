@@ -20,36 +20,34 @@ codex mcp list
 
 플러그인으로 설치했다면 `/jupyter live`로 시작합니다. 플러그인의 MCP 설정이 `uvx`로 컨트롤러를 실행하므로 수동 MCP 등록은 생략합니다.
 
-## 동작 원리
+## 아키텍처
 
-Codex에 직접 연결되는 프로세스는 환경 선택 컨트롤러입니다. 컨트롤러는 `uv` 도구 환경에서 실행되며, 초기 연결에서는 환경 관리·세션 제어 도구를 제공합니다.
+컨트롤러가 사용자의 Python 선택을 받아 검사하고, 해당 환경에서 JupyterLab·백엔드·커널을 시작합니다.
 
 ```mermaid
 flowchart TB
-    User["사용자"]
+    User["User"]
     Codex["Codex"]
 
-    subgraph ToolEnv["uv가 관리하는 도구 환경"]
-        Controller["Jupyter Live MCP 컨트롤러<br/>환경 관리와 세션 제어"]
+    subgraph ToolEnv["uv-managed tool environment"]
+        Controller["Jupyter Live MCP Controller<br/>Discover / Inspect<br/>Start / Verify"]
     end
 
-    subgraph AnalysisEnv["사용자가 선택한 Python 환경"]
-        Backend["Datalayer MCP 백엔드"]
+    subgraph AnalysisEnv["User-selected Python environment"]
+        Backend["Datalayer Jupyter MCP Backend"]
         Server["JupyterLab / Jupyter Server<br/>127.0.0.1"]
-        Kernel["Python 노트북 커널"]
+        Kernel["Python Kernel<br/>Verified interpreter / prefix"]
     end
 
-    User <-->|"Python 환경 선택"| Codex
+    User <-->|"Choose Python"| Codex
     Codex <-->|"MCP / STDIO"| Controller
-    Controller -->|"선택한 Python으로 기동"| Server
+    Controller -->|"start_session<br/>Start with selected Python"| Server
     Controller <-->|"MCP / STDIO"| Backend
-    Backend <-->|"토큰 인증<br/>HTTP / WebSocket"| Server
-    Server -->|"같은 Python으로 기동"| Kernel
+    Backend <-->|"Token authentication<br/>HTTP / WebSocket"| Server
+    Server -->|"Start with selected Python"| Kernel
 ```
 
-Python 선택이 끝나면 Codex가 프로젝트 경로와 Python 실행 파일 경로를 `start_session`에 전달합니다. 컨트롤러는 해당 Python으로 JupyterLab과 Datalayer 백엔드를 실행하고, 같은 실행 파일을 쓰는 커널 설정을 생성합니다. 커널의 `sys.executable`과 `sys.prefix`를 확인한 뒤 노트북 도구를 Codex에 제공합니다.
-
-두 MCP 연결은 표준 입출력(STDIO)으로 요청과 결과를 교환합니다. Datalayer 백엔드는 루프백 주소의 Jupyter Server에 토큰 인증으로 접속하고, HTTP API와 WebSocket으로 파일·커널·노트북 상태를 읽고 변경합니다. Codex의 서버 등록 설정은 [MCP 문서](https://developers.openai.com/codex/mcp)를 참고하세요.
+커널 검증이 끝나면 노트북 도구가 Codex에 제공됩니다. 서버 등록 설정은 [Codex MCP 문서](https://developers.openai.com/codex/mcp)를 참고하세요.
 
 ## Python 환경 구성
 
