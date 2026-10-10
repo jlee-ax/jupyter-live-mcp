@@ -50,10 +50,6 @@ flowchart TB
 
 ## Python 환경 구성
 
-실행 환경은 Python 실행 파일의 경로로 지정합니다. 프로젝트의 `.venv`와 `venv`, `VIRTUAL_ENV`와 `CONDA_PREFIX`, Conda 환경 목록, 현재 프로세스와 PATH의 Python을 탐색합니다. 목록에 없는 환경도 실행 파일의 절대 경로로 선택할 수 있습니다.
-
-선택한 환경에는 Python 3.11 이상과 다음 패키지가 필요합니다.
-
 | 패키지 | 버전 범위 | 역할 |
 | --- | --- | --- |
 | `jupyterlab` | `>=4,<5` | JupyterLab 서버와 웹 인터페이스 |
