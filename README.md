@@ -48,8 +48,6 @@ flowchart TB
     Server -->|"Start with selected Python"| Kernel
 ```
 
-실제 커널이 사용자가 선택한 Python 환경에서 실행되는지 확인하도록, 세션 초기화에 `sys.executable`과 `sys.prefix` 검증을 포함했습니다. 검증에 실패하면 해당 세션을 종료하고 오류를 반환합니다.
-
 ## Python 환경 구성
 
 실행 환경은 Python 실행 파일의 경로로 지정합니다. 프로젝트의 `.venv`와 `venv`, `VIRTUAL_ENV`와 `CONDA_PREFIX`, Conda 환경 목록, 현재 프로세스와 PATH의 Python을 탐색합니다. 목록에 없는 환경도 실행 파일의 절대 경로로 선택할 수 있습니다.
