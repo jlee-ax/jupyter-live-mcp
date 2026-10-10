@@ -22,8 +22,7 @@ codex mcp list
 
 ## 아키텍처
 
-Jupyter를 기동하기 전 Codex가 Python 환경 후보를 제시하고 사용자의 선택을 받도록 설계했습니다. 
-이를 위해 환경 탐색·의존성 검사를 담당하는 컨트롤러를 분석 환경과 분리했고, `uv` 도구 환경에서 먼저 실행하도록 구성했습니다. Jupyter 서버·Datalayer 백엔드, 노트북 커널은 사용자 선택이 확정된 뒤 해당 Python 인터프리터로 기동됩니다.
+Jupyter 기동 전 사용자가 Python 환경을 선택할 수 있도록 컨트롤러를 독립된 `uv` 환경에서 실행합니다. 서버·백엔드·커널은 선택한 Python으로 기동합니다.
 
 ```mermaid
 flowchart TB
