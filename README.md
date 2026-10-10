@@ -2,7 +2,7 @@
 
 Codex가 사용할 Python 환경을 먼저 묻고, 선택한 환경에서 JupyterLab과 노트북 커널을 실행하는 MCP 패키지입니다. `jupyter-mcp` 같은 고정된 가상환경 이름이 필요하지 않습니다.
 
-현재 초기 배포 준비 중입니다. GitHub 저장소 `jlee-ax/jupyter-live-mcp`는 아직 생성·공개되지 않았으며, 아래 GitHub 설치 경로는 저장소 공개 이후 사용할 예정입니다. 현재는 로컬 소스에서 설치할 수 있습니다.
+초기 버전은 `0.1.0`입니다. [GitHub 저장소](https://github.com/jlee-ax/jupyter-live-mcp)에서 소스를 설치하거나 로컬 소스에서 설치할 수 있습니다.
 
 ## 실행 구조
 
@@ -30,16 +30,16 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 
 이미 Python 경로를 지정했다면 같은 선택을 다시 묻지 않습니다. 환경 생성이나 패키지 설치가 필요한 경우에는 해당 변경을 요청한 뒤 진행합니다.
 
-## GitHub 공개 후 설치
+## GitHub에서 설치
 
-아래 명령은 저장소 공개 후에 사용합니다. `main`은 개발 브랜치를 가리키며, 릴리스가 제공되면 검증한 태그로 고정할 수 있습니다.
+`main`은 개발 브랜치를 가리킵니다. 릴리스가 제공되면 검증한 태그로 고정할 수 있습니다.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
 
-저장소에는 Codex 호환 플러그인 선언 `.codex-plugin/plugin.json`, MCP 실행 설정 `.mcp.json`, `skills/jupyter/SKILL.md`, 마켓플레이스 선언 `.agents/plugins/marketplace.json`도 포함됩니다. 플러그인 실행 설정은 `uvx`로 GitHub 소스의 컨트롤러를 실행하므로 저장소 공개 전에는 해당 원격 실행 경로를 사용할 수 없습니다. 일반 MCP 등록과 플러그인 설치 중 한 경로를 선택해 중복 등록을 피하세요.
+저장소에는 Codex 호환 플러그인 선언 `.codex-plugin/plugin.json`, MCP 실행 설정 `.mcp.json`, `skills/jupyter/SKILL.md`, 마켓플레이스 선언 `.agents/plugins/marketplace.json`도 포함됩니다. 플러그인 실행 설정은 `uvx`로 GitHub 소스의 컨트롤러를 실행합니다. 일반 MCP 등록과 플러그인 설치 중 한 경로를 선택해 중복 등록을 피하세요.
 
 ## 분석 환경 준비
 

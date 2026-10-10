@@ -26,8 +26,8 @@
 
 - 실행 플랫폼은 macOS, Python 3.12입니다. Windows·Linux 실행은 아직 검증하지 않았습니다.
 - GitHub 계정 연결에서 `jlee-ax`를 확인했습니다.
-- GitHub 새 저장소 생성 화면은 브라우저 권한 정책에서 접근을 거부했습니다. 원격 저장소 생성·업로드·GitHub Actions 실행·GitHub URL 설치는 아직 완료하지 않았습니다.
-- 원격 저장소 예정 주소는 `https://github.com/jlee-ax/jupyter-live-mcp`입니다. 로컬 `origin` 설정은 원격 저장소의 존재나 업로드 성공을 의미하지 않습니다.
+- 공개 저장소 `https://github.com/jlee-ax/jupyter-live-mcp`를 생성했고, GitHub 플러그인으로 저장소 메타데이터와 `jlee-ax`의 쓰기 권한을 확인했습니다.
+- GitHub Actions 실행과 GitHub URL 설치 검증은 로컬 테스트와 별개입니다. 해당 결과는 원격 배포 후 추가로 확인해야 합니다.
 - Codex 플러그인 설치 후 질문이 실제 UI에 표시되는 과정은 새 세션에서 별도로 검증해야 합니다. MCP 도구와 초기 선택 대기 상태는 실제 프로토콜 연결로 검증했습니다.
 
 현재 사용할 수 있는 산출물은 로컬 소스, 설치 가능한 wheel, 소스 배포 파일, 플러그인 선언, 환경 선택 스킬, CI 정의와 테스트입니다.
