@@ -2,6 +2,12 @@
 
 사용자가 선택한 Python 환경에서 JupyterLab과 커널을 실행하고, Codex에 노트북 읽기·편집·실행 도구를 제공하는 MCP 서버입니다.
 
+기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
+
+![로컬 설치, 가상환경 구성, JupyterLab 기동 및 MCP 노트북 실행](docs/assets/jupyter-live-setup.gif)
+
+macOS에서 기록한 설치 로그와 JupyterLab 실행 화면입니다.
+
 ## 설치
 
 수동 설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
@@ -42,7 +48,9 @@ flowchart TB
 
 ## Python 환경
 
-프로젝트의 가상환경이나 Conda 환경을 선택하거나, Python 실행 파일의 경로를 직접 지정합니다. 분석 환경에는 Python 3.11 이상과 다음 패키지가 필요합니다.
+Codex에서 프로젝트의 가상환경이나 Conda 환경을 선택하거나, Python 실행 파일 경로를 지정합니다. 새 가상환경은 기반 Python과 생성 경로를 지정해 만듭니다.
+
+분석 환경에는 Python 3.11 이상과 다음 패키지가 필요합니다.
 
 | 패키지 | 버전 |
 | --- | --- |
@@ -52,7 +60,7 @@ flowchart TB
 | `jupyter-mcp-server` | `==1.1.4` |
 | `code-sandboxes` | `==0.17.0` |
 
-환경 생성과 의존성 설치는 사용자 요청에 따라 수행합니다.
+환경 생성과 의존성 설치는 사용자 요청에 따라 수행하며, 의존성은 선택한 환경에 설치합니다.
 
 ## 세션 관리
 
