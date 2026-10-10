@@ -26,9 +26,10 @@
 
 - 실행 플랫폼은 macOS, Python 3.12입니다. Windows·Linux 실행은 아직 검증하지 않았습니다.
 - GitHub 계정 연결에서 `jlee-ax`를 확인했습니다.
-- 공개 저장소 `https://github.com/jlee-ax/jupyter-live-mcp`를 생성했고, GitHub 플러그인으로 저장소 메타데이터와 `jlee-ax`의 쓰기 권한을 확인했습니다.
+- 공개 저장소 `https://github.com/jlee-ax/jupyter-live-mcp`를 생성했고, GitHub 플러그인으로 저장소 메타데이터와 `jlee-ax`의 소유 권한을 확인했습니다.
+- GitHub 플러그인의 파일 쓰기 API는 integration 권한 부족으로 403을 반환했습니다. 기존 `jlee-ax` CLI 인증을 사용하는 연동 경로로 소스 31개 파일을 업로드하고 로컬과 원격 커밋 일치를 확인했습니다. 원격에서 읽은 패키지 설정과 환경 선택 모듈의 blob SHA도 로컬 파일과 일치했습니다.
 - CI 정의는 `ci/github-actions.yml`에 템플릿으로 보존했습니다. 현재 인증에는 GitHub workflow 쓰기 권한이 없어 자동 실행 경로에는 배치하지 않았습니다. GitHub Actions 실행은 미검증입니다.
-- GitHub URL 설치 검증은 로컬 테스트와 별개이며 원격 업로드 후 확인합니다.
+- 공개 GitHub 커밋 `7d4f4c06f98d0358177510799626a2f00b065773`에서 별도의 uv 도구 환경으로 설치했습니다. 설치된 CLI가 선택한 분석 환경을 검사하여 `ready=true`를 반환했습니다.
 - Codex 플러그인 설치 후 질문이 실제 UI에 표시되는 과정은 새 세션에서 별도로 검증해야 합니다. MCP 도구와 초기 선택 대기 상태는 실제 프로토콜 연결로 검증했습니다.
 
 현재 사용할 수 있는 산출물은 로컬 소스, 설치 가능한 wheel, 소스 배포 파일, 플러그인 선언, 환경 선택 스킬, CI 정의와 테스트입니다.
