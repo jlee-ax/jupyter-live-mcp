@@ -2,33 +2,11 @@
 
 Jupyter Live MCP는 선택한 Python 인터프리터에서 JupyterLab과 노트북 커널을 실행하고, Datalayer Jupyter MCP 서버를 통해 노트북을 제어합니다.
 
-## 실행 구조
+## 설치
 
-`uv tool install`은 환경 선택을 담당하는 컨트롤러를 별도의 도구 환경에 설치합니다. MCP 연결 시에는 이 컨트롤러만 시작합니다. Codex가 기존 환경 목록을 보여주고 사용자의 선택을 받은 다음, 선택한 Python으로 Jupyter와 MCP 백엔드를 시작합니다.
+Python 3.11 이상, `uv`, Codex의 로컬 MCP 실행 기능이 필요합니다.
 
-| 환경 | 역할 |
-| --- | --- |
-| uv가 관리하는 도구 환경 | 환경 탐색·검사·선택과 MCP 연결 관리 |
-| 사용자가 선택한 분석 환경 | JupyterLab, Datalayer MCP 백엔드, 실제 노트북 셀 실행 |
-
-프로젝트의 `.venv`·`venv`, `VIRTUAL_ENV`·`CONDA_PREFIX`, Conda 환경 목록, 현재/PATH의 Python을 탐색합니다. 목록에 없는 환경도 Python 실행 파일의 절대 경로로 지정할 수 있습니다. 선택한 경로의 심볼릭 링크를 유지하고, 시작할 때 실제 커널의 실행 파일과 `sys.prefix`를 검증합니다.
-
-## 로컬 소스에서 설치
-
-Python 3.11 이상, `uv`, Codex의 로컬 MCP 실행 기능이 필요합니다. 이 저장소의 루트에서 실행합니다.
-
-```sh
-uv tool install .
-codex mcp add jupyterLive -- jupyter-live-mcp serve
-```
-
-설치된 도구의 경로가 PATH에 포함되어 있어야 합니다. 등록 후 새 Codex 세션에서 연결하고 다음과 같이 요청합니다.
-
-> Jupyter Live를 시작하세요. 사용할 가상환경을 먼저 보여주고 물어보세요.
-
-이미 Python 경로를 지정했다면 같은 선택을 다시 묻지 않습니다. 환경 생성이나 패키지 설치가 필요한 경우에는 해당 변경을 요청한 뒤 진행합니다.
-
-## GitHub에서 설치
+### GitHub에서 설치
 
 `main`은 개발 브랜치를 가리킵니다. 릴리스가 제공되면 검증한 태그로 고정할 수 있습니다.
 
@@ -38,6 +16,21 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
 
 저장소에는 Codex 호환 플러그인 선언 `.codex-plugin/plugin.json`, MCP 실행 설정 `.mcp.json`, `skills/jupyter/SKILL.md`, 마켓플레이스 선언 `.agents/plugins/marketplace.json`도 포함됩니다. 플러그인 실행 설정은 `uvx`로 GitHub 소스의 컨트롤러를 실행합니다. 일반 MCP 등록과 플러그인 설치 중 한 경로를 선택해 중복 등록을 피하세요.
+
+### 로컬 소스에서 설치
+
+이 저장소의 루트에서 실행합니다.
+
+```sh
+uv tool install .
+codex mcp add jupyterLive -- jupyter-live-mcp serve
+```
+
+두 설치 방식 모두 도구의 실행 파일 경로가 PATH에 포함되어 있어야 합니다. 등록 후 새 Codex 세션에서 연결하고 다음과 같이 요청합니다.
+
+> Jupyter Live를 시작하세요. 사용할 Python 환경을 먼저 보여주고 물어보세요.
+
+이미 Python 경로를 지정했다면 같은 선택을 다시 묻지 않습니다. 환경 생성이나 패키지 설치가 필요한 경우에는 해당 변경을 요청한 뒤 진행합니다.
 
 ## 분석 환경 준비
 
@@ -64,7 +57,7 @@ jupyter-live-mcp inspect /absolute/path/to/environment/bin/python
 
 Windows의 venv는 보통 `Scripts/python.exe`, Conda는 환경 루트의 `python.exe`를 사용합니다. 표시된 실제 실행 파일 경로를 선택하세요.
 
-## MCP 사용 흐름
+## 사용
 
 1. `discover_environments`로 대상 프로젝트의 환경을 찾고 사용자에게 Python을 선택받습니다.
 2. `inspect_environment`로 선택한 환경을 검사합니다. 필요한 생성·설치는 사용자 요청에 따라 수행합니다.
@@ -75,6 +68,17 @@ Windows의 venv는 보통 `Scripts/python.exe`, Conda는 환경 루트의 `pytho
 노트북은 MCP로 수정합니다. 수정 전 해당 노트북과 셀을 읽고, 기본적으로 코드 셀을 사용하며, 실행 후 셀과 출력을 다시 확인합니다. 기존 커널을 공유 상태로 유지하고 사용자의 요청 없이 재시작하지 않습니다.
 
 JupyterLab은 인증을 사용하는 루프백 주소에 바인딩됩니다. 토큰 자체는 MCP 결과에 포함하지 않습니다. 브라우저 자동 열기는 Codex 등 호스트의 브라우저 연동 기능에 따라 선택적으로 수행합니다. 토큰 파일의 내용이나 토큰을 포함한 인증 URL을 대화·로그·저장소에 노출하지 마세요.
+
+## 런타임 구성
+
+환경 선택을 담당하는 컨트롤러는 `uv`가 관리하는 도구 환경에서 실행됩니다. MCP 연결 시에는 컨트롤러만 시작합니다. Codex가 사용자에게 Python 환경을 선택받은 뒤, 선택한 인터프리터로 JupyterLab과 MCP 백엔드를 시작합니다.
+
+| 환경 | 역할 |
+| --- | --- |
+| uv가 관리하는 도구 환경 | 환경 탐색·검사·선택과 MCP 연결 관리 |
+| 사용자가 선택한 분석 환경 | JupyterLab, Datalayer MCP 백엔드, 실제 노트북 셀 실행 |
+
+프로젝트의 `.venv`·`venv`, `VIRTUAL_ENV`·`CONDA_PREFIX`, Conda 환경 목록, 현재/PATH의 Python을 탐색합니다. 목록에 없는 환경도 Python 실행 파일의 절대 경로로 지정할 수 있습니다. 선택한 경로의 심볼릭 링크를 유지하고, 시작할 때 실제 커널의 실행 파일과 `sys.prefix`를 검증합니다.
 
 ## 세션 보존과 종료
 
