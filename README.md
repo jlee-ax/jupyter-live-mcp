@@ -1,8 +1,6 @@
 # Jupyter Live MCP
 
-Codex가 사용할 Python 환경을 먼저 묻고, 선택한 환경에서 JupyterLab과 노트북 커널을 실행하는 MCP 패키지입니다. `jupyter-mcp` 같은 고정된 가상환경 이름이 필요하지 않습니다.
-
-초기 버전은 `0.1.0`입니다. [GitHub 저장소](https://github.com/jlee-ax/jupyter-live-mcp)에서 소스를 설치하거나 로컬 소스에서 설치할 수 있습니다.
+Jupyter Live MCP는 선택한 Python 인터프리터에서 JupyterLab과 노트북 커널을 실행하고, Datalayer Jupyter MCP 서버를 통해 노트북을 제어합니다.
 
 ## 실행 구조
 
