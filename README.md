@@ -85,7 +85,6 @@ jupyter-live-mcp stop --state-dir /path/to/session
 | `session_info` | 없음 | 실행 환경·커널·접속 정보 조회 |
 | `stop_session` | 없음 | 현재 세션 종료 |
 
-노트북 도구는 세션 시작 후 제공됩니다.
 
 ## 개발 및 검증
 
