@@ -12,7 +12,6 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 codex mcp list
 ```
 
-MCP 등록 후 Codex에 Jupyter Live 시작을 요청합니다. 플러그인으로 설치했다면 `/jupyter live`를 사용합니다.
 
 ## 아키텍처
 
