@@ -1,10 +1,10 @@
 # Jupyter Live MCP
 
-Codex에서 사용할 Python 환경을 선택하고, 그 환경의 JupyterLab과 커널로 노트북을 작업하는 로컬 MCP 서버입니다. 환경 탐색과 세션 기동은 이 패키지가, 노트북 읽기·편집·실행은 Datalayer Jupyter MCP Server가 담당합니다.
+사용자가 선택한 Python 환경에서 JupyterLab과 커널을 실행하고, Codex에 노트북 읽기·편집·실행 도구를 제공하는 MCP 서버입니다.
 
 ## 시작하기
 
-Python 3.11 이상과 `uv`를 준비합니다. Codex CLI에 MCP 서버를 직접 등록하려면 다음 명령을 실행합니다.
+수동 설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
@@ -12,19 +12,17 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 codex mcp list
 ```
 
-첫 번째 명령은 GitHub의 `main` 소스를 `uv` 도구 환경에 설치합니다. 두 번째 명령은 Codex에 서버 시작 명령을 등록하고, 마지막 명령은 등록 결과를 확인합니다. `codex`와 `jupyter-live-mcp` 실행 파일은 PATH에서 찾을 수 있어야 합니다.
-
 등록 후 새 Codex 세션에서 작업할 프로젝트를 지정하고 다음과 같이 요청합니다.
 
 > 이 프로젝트에서 Jupyter Live를 시작하세요. 사용할 Python 환경을 먼저 보여주고 물어보세요.
 
-Codex가 환경 후보를 제시하면 사용할 Python을 선택합니다. 의존성 검사가 끝나고 세션이 시작되면 노트북을 열어 셀을 읽고, 수정하고, 실행할 수 있습니다. 이미 Python 경로를 지정한 요청이라면 그 선택을 사용합니다.
+후보 목록에서 Python을 선택하거나 실행 파일 경로를 지정합니다. 요청에 Python 경로를 이미 지정했다면 그 환경을 사용합니다.
 
-Codex 플러그인으로 설치한 경우에는 `/jupyter live`로 호출합니다. 동봉된 MCP 설정이 `uvx`로 컨트롤러를 시작하므로 위의 수동 MCP 등록은 별도로 실행하지 않습니다.
+플러그인으로 설치했다면 `/jupyter live`로 시작합니다. 플러그인의 MCP 설정이 `uvx`로 컨트롤러를 실행하므로 수동 MCP 등록은 생략합니다.
 
 ## 동작 원리
 
-환경 선택을 처리하는 컨트롤러와 노트북 코드를 실행하는 분석 환경을 분리합니다. 이 구성 덕분에 Jupyter를 시작하기 전에 MCP로 환경을 탐색하고 사용자에게 선택을 받을 수 있습니다.
+Codex에 직접 연결되는 프로세스는 환경 선택 컨트롤러입니다. 컨트롤러는 `uv` 도구 환경에서 실행되며, 초기 연결에서는 환경 관리·세션 제어 도구를 제공합니다.
 
 ```mermaid
 flowchart TB
@@ -44,16 +42,14 @@ flowchart TB
     User <-->|"Python 환경 선택"| Codex
     Codex <-->|"MCP / STDIO"| Controller
     Controller -->|"선택한 Python으로 기동"| Server
-    Controller <-->|"기동 후 MCP / STDIO"| Backend
+    Controller <-->|"MCP / STDIO"| Backend
     Backend <-->|"토큰 인증<br/>HTTP / WebSocket"| Server
     Server -->|"같은 Python으로 기동"| Kernel
 ```
 
-MCP 연결 직후에는 `jupyter-live-mcp serve` 컨트롤러가 실행되고 환경 관리·세션 제어 도구가 제공됩니다. 사용자가 Python을 선택하면 Codex가 프로젝트 경로와 Python 실행 파일 경로를 `start_session`에 전달합니다.
+Python 선택이 끝나면 Codex가 프로젝트 경로와 Python 실행 파일 경로를 `start_session`에 전달합니다. 컨트롤러는 해당 Python으로 JupyterLab과 Datalayer 백엔드를 실행하고, 같은 실행 파일을 쓰는 커널 설정을 생성합니다. 커널의 `sys.executable`과 `sys.prefix`를 확인한 뒤 노트북 도구를 Codex에 제공합니다.
 
-컨트롤러는 선택한 Python으로 JupyterLab과 Datalayer 백엔드를 실행하고, 같은 실행 파일을 사용하는 커널 설정을 생성합니다. 시작 직후 커널의 `sys.executable`과 `sys.prefix`를 검사해 선택한 환경과 일치하는지 확인합니다. 검증이 끝나면 노트북 도구가 Codex의 도구 목록에 추가됩니다.
-
-Codex–컨트롤러와 컨트롤러–백엔드의 MCP 연결은 표준 입출력(STDIO)을 사용합니다. 별도의 MCP 네트워크 포트 없이 프로세스 사이에서 요청과 결과를 전달하는 방식입니다. 백엔드는 루프백 주소의 Jupyter Server에 토큰 인증으로 접속하고, HTTP API와 WebSocket으로 파일·커널·노트북 상태를 조작합니다. 등록 방식은 [Codex MCP 문서](https://developers.openai.com/codex/mcp)를 참고하세요.
+두 MCP 연결은 표준 입출력(STDIO)으로 요청과 결과를 교환합니다. Datalayer 백엔드는 루프백 주소의 Jupyter Server에 토큰 인증으로 접속하고, HTTP API와 WebSocket으로 파일·커널·노트북 상태를 읽고 변경합니다. Codex의 서버 등록 설정은 [MCP 문서](https://developers.openai.com/codex/mcp)를 참고하세요.
 
 ## Python 환경 구성
 
@@ -63,35 +59,35 @@ Codex–컨트롤러와 컨트롤러–백엔드의 MCP 연결은 표준 입출�
 
 | 패키지 | 버전 범위 | 역할 |
 | --- | --- | --- |
-| `jupyterlab` | `>=4,<5` | Jupyter 서버와 웹 작업 화면 |
+| `jupyterlab` | `>=4,<5` | JupyterLab 서버와 웹 인터페이스 |
 | `jupyter-collaboration` | `>=4,<5` | 노트북의 실시간 공동 편집 |
 | `ipykernel` | `>=6,<8` | Python 셀 실행 |
 | `jupyter-mcp-server` | `==1.1.4` | Datalayer 노트북 조작 백엔드 |
-| `code-sandboxes` | `==0.17.0` | 백엔드의 Jupyter 실행 연동 |
+| `code-sandboxes` | `==0.17.0` | Datalayer의 Jupyter 백엔드 선택 |
 
-환경 검사는 누락되거나 호환되지 않는 패키지를 반환합니다. 사용자가 요청하면 새 가상환경을 생성하거나 `uv pip --python`으로 선택한 환경에 의존성을 설치합니다. 기존 환경에 설치할 경우 패키지 버전이 변경될 수 있습니다. `code-sandboxes`의 버전 고정 이유는 [검증 기록](VERIFICATION.md)에 정리했습니다.
+환경 검사에서 누락되거나 호환되지 않는 패키지를 확인합니다. 환경 생성과 의존성 설치는 사용자 요청에 따라 수행하며, 설치에는 `uv pip --python`을 사용합니다. 기존 환경에 설치할 경우 패키지 버전이 변경될 수 있습니다. `code-sandboxes`의 버전 고정 이유는 [검증 기록](VERIFICATION.md)에 정리했습니다.
 
-환경 목록과 준비 상태는 CLI에서도 확인할 수 있습니다.
+CLI로 환경 목록을 조회할 수 있습니다. 다음은 프로젝트의 `.venv`를 검사하는 예입니다.
 
 ```sh
 jupyter-live-mcp environments --project .
-jupyter-live-mcp inspect /absolute/path/to/environment/bin/python
+jupyter-live-mcp inspect .venv/bin/python
 ```
 
 ## 노트북 작업과 세션 관리
 
-노트북 작업은 MCP를 통해 수행합니다. Codex는 대상 노트북과 셀을 읽은 뒤 필요한 셀을 편집·실행하고, 변경된 셀과 출력을 다시 확인합니다. 기본 셀 형식은 코드이며, 기존 커널의 변수와 작업 상태를 유지합니다.
+동봉된 [Codex 작업 지침](skills/jupyter/SKILL.md)은 셀 읽기 → 편집·실행 → 결과 확인 순서로 작업하도록 합니다. 코드 셀을 기본으로 사용하고, 작업 중인 커널을 재사용합니다.
 
-`session_info`는 선택한 Python, 커널 ID, Jupyter 주소와 로컬 토큰 파일 경로를 반환합니다. 인증 토큰 자체는 결과에 포함하지 않습니다. JupyterLab 화면을 여는 기능은 Codex 호스트의 브라우저 연동에 따라 제공됩니다.
+`session_info`는 Python 경로, 커널 ID, Jupyter 주소와 토큰 파일 경로를 반환합니다. 토큰 값은 포함하지 않습니다. JupyterLab을 자동으로 열려면 Codex에 브라우저 연동 도구가 있어야 합니다.
 
 MCP 연결이 종료되어도 Jupyter 프로세스와 커널은 유지됩니다. 보존된 세션을 조회하고 종료하려면 다음 명령을 사용합니다.
 
 ```sh
 jupyter-live-mcp sessions
-jupyter-live-mcp stop --state-dir /exact/state_dir/from/sessions
+jupyter-live-mcp stop --state-dir /path/to/session
 ```
 
-`state_dir`에는 조회 결과의 해당 세션 경로를 지정합니다. 연결 중에는 `stop_session`으로 종료할 수 있습니다. 활성 세션의 Python을 바꾸려면 먼저 그 세션을 명시적으로 종료해야 합니다.
+`--state-dir`에는 조회 결과의 `state_dir` 값을 지정합니다. 연결 중에는 `stop_session`으로 종료합니다. 활성 세션의 Python을 바꾸려면 먼저 해당 세션을 종료해야 합니다.
 
 ## MCP 도구
 
@@ -135,4 +131,4 @@ GitHub Actions 설정은 [ci/github-actions.yml](ci/github-actions.yml)에 템�
 
 ## 라이선스
 
-이 프로젝트는 [MIT 라이선스](LICENSE)를 사용합니다. 노트북 백엔드인 [Datalayer Jupyter MCP Server](https://github.com/datalayer/jupyter-mcp-server)는 BSD 3-Clause 라이선스를 사용하며, 이 패키지는 해당 배포 패키지에 의존합니다.
+이 프로젝트는 [MIT 라이선스](LICENSE)를 사용합니다. 노트북 백엔드인 [Datalayer Jupyter MCP Server](https://github.com/datalayer/jupyter-mcp-server)는 BSD 3-Clause 라이선스를 사용합니다.

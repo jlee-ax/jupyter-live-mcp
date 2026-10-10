@@ -2,11 +2,9 @@
 
 ## 0.1.0 — 2026-10-10
 
-- Pinned selected-environment `code-sandboxes` to `0.17.0` for compatibility with Datalayer `1.1.4`; environment inspection rejects incompatible versions before startup.
-
-- Added an MCP controller that offers Python environment selection before Jupyter startup.
-- Added discovery of project virtualenvs, activated environments and Conda environments, plus explicit interpreter selection.
-- Added explicit environment creation and dependency installation, selected-kernel verification and preserved-session management.
-- Added Codex compatibility plugin metadata, a Jupyter workflow skill and a local-source marketplace declaration.
-- Published the source repository and verified installation from GitHub.
-- Added an optional GitHub Actions template for quality/build and Linux integration checks. Automatic CI activation requires workflow write permission.
+- Jupyter 시작 전 Python 환경 탐색과 사용자 지정 인터프리터 선택.
+- 환경 검사, 가상환경 생성, 선택한 환경에 의존성 설치.
+- 선택한 Python으로 JupyterLab과 MCP 백엔드 기동, 커널의 실행 환경 검증.
+- Datalayer `jupyter-mcp-server==1.1.4`를 통한 노트북 조작과 호환되는 `code-sandboxes==0.17.0` 사용.
+- MCP 연결 종료 후 Jupyter 세션 유지와 세션별 명시적 종료.
+- Codex 플러그인 설정, Jupyter 작업 스킬, GitHub Actions 템플릿.

@@ -1,7 +1,7 @@
 {
   "name": "jupyter-live-mcp",
   "version": "0.1.0",
-  "description": "Choose a Python environment before starting a live Jupyter MCP session.",
+  "description": "MCP server for Jupyter notebooks with user-selected Python environments.",
   "author": { "name": "jlee-ax" },
   "license": "MIT",
   "keywords": ["jupyter", "python", "virtualenv", "conda", "mcp"],
@@ -9,8 +9,8 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Jupyter Live MCP",
-    "shortDescription": "Choose Python, then work live in Jupyter",
-    "longDescription": "Ask which Python environment to use, inspect its dependencies, then start JupyterLab and a notebook kernel in that environment. Manage notebooks through MCP and preserve active kernels between connections.",
+    "shortDescription": "Jupyter notebooks in a selected Python environment",
+    "longDescription": "Start JupyterLab and its kernel with a selected Python interpreter. Read, edit and run notebooks through MCP. Jupyter sessions remain running when the MCP connection closes.",
     "developerName": "jlee-ax",
     "category": "Data & Analytics",
     "capabilities": ["Interactive", "Read", "Write"],

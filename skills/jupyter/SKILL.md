@@ -32,6 +32,6 @@ Do not select a fixed environment name or silently fall back to another interpre
 
 ## Session lifecycle
 
-Do not restart, replace or stop a kernel or Jupyter session unless explicitly requested, or a confirmed runtime failure requires repair. Explain the repair before disrupting shared state. Closing the controller connection preserves the Jupyter process and kernel; this is expected.
+Do not restart, replace or stop a kernel or Jupyter session unless explicitly requested, or a confirmed runtime failure requires repair. Explain the repair before disrupting shared state. Closing the controller connection preserves the Jupyter process and kernel.
 
 Use `stop_session` for an explicit request to stop the connected session. To find a session left after disconnection, use `jupyter-live-mcp sessions`. Stop only the requested session with `jupyter-live-mcp stop --state-dir` and its exact listed `state_dir`.

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "jupyter-live-mcp"
 version = "0.1.0"
-description = "Choose your Python environment before starting a live Jupyter MCP session."
+description = "MCP server for Jupyter notebooks with user-selected Python environments."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
