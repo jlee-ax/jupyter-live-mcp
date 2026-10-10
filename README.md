@@ -22,7 +22,7 @@ codex mcp list
 
 ## 아키텍처
 
-프로젝트마다 Python 실행 환경을 선택할 수 있도록 MCP 연결을 담당하는 컨트롤러를 분석 환경과 분리합니다. 컨트롤러는 `uv` 도구 환경에서 환경 선택·의존성 검사를 처리하고, 선택된 인터프리터로 Jupyter 서버·Datalayer 백엔드·노트북 커널을 기동합니다.
+Jupyter를 기동하기 전에 Codex가 Python 환경 후보를 제시하고 사용자의 선택을 받도록 설계했습니다. 이를 위해 환경 탐색·의존성 검사를 담당하는 컨트롤러를 분석 환경과 분리하고, `uv` 도구 환경에서 먼저 실행하도록 구성했습니다. Jupyter 서버·Datalayer 백엔드·노트북 커널은 사용자 선택이 확정된 뒤 해당 Python 인터프리터로 기동합니다.
 
 ```mermaid
 flowchart TB
@@ -47,7 +47,7 @@ flowchart TB
     Server -->|"Start with selected Python"| Kernel
 ```
 
-세션 초기화에서는 커널의 `sys.executable`과 `sys.prefix`를 선택한 환경과 대조해, 셀이 지정된 Python 환경에서 실행되는지 검증합니다.
+실제 커널이 사용자가 선택한 Python 환경에서 실행되는지 확인하도록, 세션 초기화에 `sys.executable`과 `sys.prefix` 검증을 포함했습니다. 검증에 실패하면 해당 세션을 종료하고 오류를 반환합니다.
 
 ## Python 환경 구성
 
