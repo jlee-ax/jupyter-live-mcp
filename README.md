@@ -12,7 +12,7 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 codex mcp list
 ```
 
-등록 후 새 Codex 세션에서 작업할 프로젝트를 지정하고 다음과 같이 요청합니다.
+등록 후 새 Codex 세션에서 작업할 프로젝트를 지정하고 다음과 같이 요청하세요.
 
 > 이 프로젝트에서 Jupyter Live를 시작하세요. 사용할 Python 환경을 먼저 보여주고 물어보세요.
 
