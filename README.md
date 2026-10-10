@@ -4,9 +4,9 @@
 
 기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
 
-![로컬 설치, 가상환경 구성, JupyterLab 기동 및 MCP 노트북 실행](docs/assets/jupyter-live-setup.gif)
+![설치와 가상환경 구성부터 노트북 실행까지](docs/assets/install-and-run.gif)
 
-macOS에서 기록한 설치 로그와 JupyterLab 실행 화면입니다.
+JupyterLab 터미널에서 설치·가상환경 구성 후 노트북을 실행한 화면입니다.
 
 ## 설치
 
