@@ -8,8 +8,6 @@ Use the Codex app for notebook operations and its in-app browser to view Jupyter
 
 ![CLI installation, Python environment selection, and JupyterLab startup](docs/assets/codex-install-and-start.gif)
 
-CLI demonstration recorded in a JupyterLab terminal.
-
 ## Installation
 
 Requires Python 3.11 or later, `uv`, the Codex app, and the `codex` CLI for MCP registration.
@@ -18,14 +16,6 @@ Requires Python 3.11 or later, `uv`, the Codex app, and the `codex` CLI for MCP 
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
-
-## Usage
-
-Open the project in the Codex app and start a new chat.
-
-> Start Jupyter Live in this project. Ask which Python environment to use, then open JupyterLab in the in-app browser.
-
-Select a Python environment when prompted. View the notebook in JupyterLab in the in-app browser, and use the Codex chat to read, edit, and execute cells.
 
 ## Architecture
 
