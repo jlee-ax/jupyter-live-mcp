@@ -8,8 +8,6 @@ Codex 앱에서 노트북 작업을 요청하고, 내장 브라우저의 Jupyter
 
 ![CLI 설치·Python 환경 선택·JupyterLab 실행](docs/assets/codex-install-and-start.gif)
 
-JupyterLab 터미널에서 촬영한 CLI 실행 예시입니다.
-
 ## 설치
 
 Python 3.11 이상, `uv`, Codex 앱과 MCP 등록용 `codex` CLI가 필요합니다.
@@ -18,14 +16,6 @@ Python 3.11 이상, `uv`, Codex 앱과 MCP 등록용 `codex` CLI가 필요합니
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
-
-## 사용
-
-Codex 앱에서 프로젝트를 열고 새 대화를 시작합니다.
-
-> 이 프로젝트에서 Jupyter Live를 시작하세요. 사용할 Python 환경을 먼저 물어보고, JupyterLab을 내장 브라우저에 열어주세요.
-
-Python 환경을 선택한 뒤 내장 브라우저의 JupyterLab에서 노트북을 확인합니다. 셀 읽기·편집·실행은 Codex 대화에서 요청합니다.
 
 ## 아키텍처
 
