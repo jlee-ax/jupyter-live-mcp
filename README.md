@@ -4,11 +4,15 @@
 
 An MCP server that runs JupyterLab and notebook kernels in a user-selected Python environment and provides Codex with tools to read, edit, and execute notebooks.
 
-Use an existing virtual environment or create a new one and install the required Jupyter dependencies.
+Use the Codex app for notebook operations and its in-app browser to view JupyterLab.
+
+![CLI installation, Python environment selection, and JupyterLab startup](docs/assets/codex-install-and-start.gif)
+
+CLI demonstration recorded in a JupyterLab terminal.
 
 ## Installation
 
-Requires Python 3.11 or later, `uv`, and Codex CLI.
+Requires Python 3.11 or later, `uv`, the Codex app, and the `codex` CLI for MCP registration.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
@@ -17,15 +21,11 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 
 ## Usage
 
-Run Codex from the project directory.
+Open the project in the Codex app and start a new chat.
 
-```sh
-codex
-```
+> Start Jupyter Live in this project. Ask which Python environment to use, then open JupyterLab in the in-app browser.
 
-> Start Jupyter Live in this project.
-
-Select a Python environment from the candidates shown by Codex. Open the session's `url` in your browser. If prompted to sign in, enter the token stored in `token_file`. Automatic browser launch depends on Codex's browser integration.
+Select a Python environment when prompted. View the notebook in JupyterLab in the in-app browser, and use the Codex chat to read, edit, and execute cells.
 
 ## Architecture
 
@@ -34,7 +34,10 @@ The controller runs in a dedicated tool environment managed by `uv` so that the 
 ```mermaid
 flowchart TB
     User["User"]
-    Codex["Codex"]
+    subgraph CodexApp["Codex app"]
+        Codex["Chat / MCP client"]
+        Browser["In-app browser<br/>JupyterLab"]
+    end
 
     subgraph ToolEnv["uv-managed tool environment"]
         Controller["Jupyter Live MCP Controller<br/>Discover / Inspect / Start"]
@@ -47,10 +50,12 @@ flowchart TB
     end
 
     User <-->|"Select Python"| Codex
+    Codex -->|"Open JupyterLab"| Browser
     Codex <-->|"MCP / STDIO"| Controller
     Controller -->|"Start session"| Server
     Controller <-->|"MCP / STDIO"| Backend
     Backend <-->|"Token authentication<br/>HTTP / WebSocket"| Server
+    Browser <-->|"Authenticated HTTP / WebSocket"| Server
     Server -->|"Start kernel"| Kernel
 ```
 

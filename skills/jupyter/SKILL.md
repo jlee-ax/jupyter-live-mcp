@@ -18,7 +18,7 @@ Do not select a fixed environment name or silently fall back to another interpre
 
 ## Browser integration
 
-`session_info` returns a nonsecret `url` and a local `token_file` path. Opening JupyterLab depends on the host's browser integration; the server does not open a browser automatically. Use the host's credential-aware local browser workflow when available. Otherwise, provide the clean URL and token file path so the user can sign in locally. Never display, log or save the token contents or an authenticated URL in conversation, notebook source, evidence or versioned files.
+In the Codex app, open JupyterLab in the in-app browser after session startup and keep it available alongside the chat. `session_info` returns a nonsecret `url` and a local `token_file` path. Browser access uses the host's credential-aware local browser workflow; the MCP server does not open a browser itself. If that workflow is unavailable, report the limitation and provide the clean URL and token file path for local sign-in. Never display, log or save the token contents or an authenticated URL in conversation, notebook source, evidence or versioned files.
 
 ## Notebook operations
 

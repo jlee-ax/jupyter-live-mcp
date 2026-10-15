@@ -4,11 +4,15 @@
 
 사용자가 선택한 Python 환경에서 JupyterLab과 커널을 실행하고, Codex에 노트북 읽기·편집·실행 도구를 제공하는 MCP 서버입니다.
 
-기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
+Codex 앱에서 노트북 작업을 요청하고, 내장 브라우저의 JupyterLab에서 편집·실행 결과를 확인합니다.
+
+![CLI 설치·Python 환경 선택·JupyterLab 실행](docs/assets/codex-install-and-start.gif)
+
+JupyterLab 터미널에서 촬영한 CLI 실행 예시입니다.
 
 ## 설치
 
-설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
+Python 3.11 이상, `uv`, Codex 앱과 MCP 등록용 `codex` CLI가 필요합니다.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
@@ -17,15 +21,11 @@ codex mcp add jupyterLive -- jupyter-live-mcp serve
 
 ## 사용
 
-프로젝트 디렉터리에서 Codex를 실행합니다.
+Codex 앱에서 프로젝트를 열고 새 대화를 시작합니다.
 
-```sh
-codex
-```
+> 이 프로젝트에서 Jupyter Live를 시작하세요. 사용할 Python 환경을 먼저 물어보고, JupyterLab을 내장 브라우저에 열어주세요.
 
-> 이 프로젝트에서 Jupyter Live를 시작하세요.
-
-Codex가 제시한 Python 환경을 선택합니다. 세션 시작 결과의 `url`로 JupyterLab에 접속하고, 로그인이 필요하면 `token_file`에 저장된 토큰을 입력합니다. 브라우저 자동 열기는 Codex의 브라우저 연동에 따릅니다.
+Python 환경을 선택한 뒤 내장 브라우저의 JupyterLab에서 노트북을 확인합니다. 셀 읽기·편집·실행은 Codex 대화에서 요청합니다.
 
 ## 아키텍처
 
@@ -34,7 +34,10 @@ Jupyter 실행 전에 Python 환경을 선택할 수 있도록 컨트롤러를 `
 ```mermaid
 flowchart TB
     User["User"]
-    Codex["Codex"]
+    subgraph CodexApp["Codex app"]
+        Codex["Chat / MCP client"]
+        Browser["In-app browser<br/>JupyterLab"]
+    end
 
     subgraph ToolEnv["uv-managed tool environment"]
         Controller["Jupyter Live MCP Controller<br/>Discover / Inspect / Start"]
@@ -47,10 +50,12 @@ flowchart TB
     end
 
     User <-->|"Select Python"| Codex
+    Codex -->|"Open JupyterLab"| Browser
     Codex <-->|"MCP / STDIO"| Controller
     Controller -->|"Start session"| Server
     Controller <-->|"MCP / STDIO"| Backend
     Backend <-->|"Token authentication<br/>HTTP / WebSocket"| Server
+    Browser <-->|"Authenticated HTTP / WebSocket"| Server
     Server -->|"Start kernel"| Kernel
 ```
 
