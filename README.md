@@ -4,9 +4,9 @@
 
 기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
 
-![설치와 가상환경 구성부터 노트북 실행까지](docs/assets/install-and-run.gif)
+![터미널 설치 → Codex에서 Python 환경 선택 → JupyterLab 실행](docs/assets/codex-install-and-start.gif)
 
-JupyterLab 터미널에서 설치·가상환경 구성 후 노트북을 실행한 화면입니다.
+두 명령으로 설치·등록한 뒤, Codex에서 Python 환경을 선택해 JupyterLab을 실행하는 실제 화면입니다. 로컬 경로는 가렸습니다.
 
 ## 설치
 
