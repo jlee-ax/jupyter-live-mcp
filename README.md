@@ -1,33 +1,35 @@
 # Jupyter Live MCP
 
-사용자가 선택한 Python 환경에서 JupyterLab과 커널을 실행하고, Codex에 노트북 읽기·편집·실행 도구를 제공하는 MCP 서버입니다.
+[English](README.md) | [한국어](README.ko.md)
 
-기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
+An MCP server that runs JupyterLab and notebook kernels in a user-selected Python environment and provides Codex with tools to read, edit, and execute notebooks.
 
-## 설치
+Use an existing virtual environment or create a new one and install the required Jupyter dependencies.
 
-설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
+## Installation
+
+Requires Python 3.11 or later, `uv`, and Codex CLI.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
 
-## 사용
+## Usage
 
-프로젝트 디렉터리에서 Codex를 실행합니다.
+Run Codex from the project directory.
 
 ```sh
 codex
 ```
 
-> 이 프로젝트에서 Jupyter Live를 시작하세요.
+> Start Jupyter Live in this project.
 
-Codex가 제시한 Python 환경을 선택합니다. 세션 시작 결과의 `url`로 JupyterLab에 접속하고, 로그인이 필요하면 `token_file`에 저장된 토큰을 입력합니다. 브라우저 자동 열기는 Codex의 브라우저 연동에 따릅니다.
+Select a Python environment from the candidates shown by Codex. Open the session's `url` in your browser. If prompted to sign in, enter the token stored in `token_file`. Automatic browser launch depends on Codex's browser integration.
 
-## 아키텍처
+## Architecture
 
-Jupyter 실행 전에 Python 환경을 선택할 수 있도록 컨트롤러를 `uv`가 관리하는 도구 전용 환경에서 실행합니다. Jupyter 서버·MCP 백엔드·노트북 커널은 선택한 Python으로 실행합니다.
+The controller runs in a dedicated tool environment managed by `uv` so that the Python environment can be selected before Jupyter starts. The Jupyter server, MCP backend, and notebook kernel run with the selected Python interpreter.
 
 ```mermaid
 flowchart TB
@@ -52,13 +54,13 @@ flowchart TB
     Server -->|"Start kernel"| Kernel
 ```
 
-## Python 환경
+## Python environments
 
-Codex에서 프로젝트의 가상환경이나 Conda 환경을 선택하거나, Python 실행 파일 경로를 지정합니다. 새 가상환경은 기반 Python과 생성 경로를 지정해 만듭니다.
+Select a project virtual environment or Conda environment in Codex, or provide a Python executable path. To create a virtual environment, specify a base Python interpreter and a destination path.
 
-분석 환경에는 Python 3.11 이상과 다음 패키지가 필요합니다.
+The analysis environment requires Python 3.11 or later and the following packages.
 
-| 패키지 | 버전 |
+| Package | Version |
 | --- | --- |
 | `jupyterlab` | `>=4,<5` |
 | `jupyter-collaboration` | `>=4,<5` |
@@ -66,34 +68,34 @@ Codex에서 프로젝트의 가상환경이나 Conda 환경을 선택하거나, 
 | `jupyter-mcp-server` | `==1.1.4` |
 | `code-sandboxes` | `==0.17.0` |
 
-선택한 환경의 의존성을 검사하고, 환경 생성과 필요한 패키지 설치는 사용자 요청에 따라 수행합니다.
+Dependencies are checked in the selected environment. Environment creation and package installation require a user request.
 
-## 세션 관리
+## Session management
 
-MCP 연결이 종료돼도 Jupyter와 커널은 유지됩니다. 새 MCP 연결에서 기존 세션으로 자동 재연결되지는 않습니다. 실행 환경을 바꾸려면 기존 Jupyter 세션을 종료합니다.
+Jupyter and its kernels remain running after the MCP connection closes. A new MCP connection does not automatically reconnect to an existing session. Stop the existing Jupyter session before changing environments.
 
 ```sh
 jupyter-live-mcp sessions
 jupyter-live-mcp stop --state-dir /path/to/session
 ```
 
-`--state-dir`에는 조회 결과의 `state_dir` 값을 지정합니다.
+Use the `state_dir` value returned by `sessions` for `--state-dir`.
 
-## 환경·세션 관리 도구
+## Environment and session tools
 
-| 도구 | 입력 | 기능 |
+| Tool | Input | Purpose |
 | --- | --- | --- |
-| `discover_environments` | `project` | Python 환경 탐색 |
-| `inspect_environment` | `python_path` | 환경·의존성 검사 |
-| `create_environment` | `base_python`, `target_path` | 가상환경 생성 |
-| `install_dependencies` | `python_path` | 의존성 설치 |
-| `start_session` | `project`, `python_path` | 세션 시작 |
-| `session_info` | 없음 | 실행 환경·커널·접속 정보 조회 |
-| `stop_session` | 없음 | 현재 세션 종료 |
+| `discover_environments` | `project` | Discover Python environments |
+| `inspect_environment` | `python_path` | Check the interpreter and dependencies |
+| `create_environment` | `base_python`, `target_path` | Create a virtual environment |
+| `install_dependencies` | `python_path` | Install required dependencies |
+| `start_session` | `project`, `python_path` | Start a session |
+| `session_info` | None | Get environment, kernel, and connection details |
+| `stop_session` | None | Stop the current session |
 
-## 개발 및 검증
+## Development and verification
 
-로컬 소스 설치는 저장소 루트에서 `uv tool install .`을 실행합니다.
+To install from local source, run `uv tool install .` at the repository root.
 
 ```sh
 uv sync --group dev
@@ -104,8 +106,8 @@ uv run pytest -m 'not integration'
 uv build --wheel
 ```
 
-통합 테스트 준비·실행 방법과 검증 범위는 [검증 기록](VERIFICATION.md)을 참고하세요. GitHub Actions 설정은 [CI 템플릿](ci/github-actions.yml)으로 제공합니다.
+See [Verification](VERIFICATION.md) for integration test setup, execution, and validation scope. GitHub Actions configuration is provided as a [CI template](ci/github-actions.yml).
 
-## 라이선스
+## License
 
-이 프로젝트는 [MIT 라이선스](LICENSE)를 사용합니다. [Datalayer Jupyter MCP Server](https://github.com/datalayer/jupyter-mcp-server)는 BSD 3-Clause 라이선스를 사용합니다.
+This project uses the [MIT License](LICENSE). [Datalayer Jupyter MCP Server](https://github.com/datalayer/jupyter-mcp-server) uses the BSD 3-Clause License.
