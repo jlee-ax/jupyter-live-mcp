@@ -1,6 +1,6 @@
 # 0.1.0 검증 기록
 
-- 검증일: 2026-10-10
+- 코드·패키지 검증일: 2026-10-10
 - 실행 환경: macOS, Python 3.12
 
 ## 검사 결과
@@ -38,11 +38,34 @@
 
 [커밋 7d4f4c0](https://github.com/jlee-ax/jupyter-live-mcp/commit/7d4f4c06f98d0358177510799626a2f00b065773)의 소스를 별도 uv 도구 환경에 설치했습니다. 설치된 CLI로 분석 환경을 검사해 `ready=true`를 확인했습니다.
 
+## Codex CLI 검증 — 2026-10-15
+
+[커밋 99fb018](https://github.com/jlee-ax/jupyter-live-mcp/commit/99fb018628523ca9b21531c7498c96ad31915222)의 소스 설치와 수동 MCP 등록 후, Codex CLI에서 환경 후보를 조회하고 프로젝트의 `.venv`를 선택했습니다. 선택한 환경의 Jupyter 서버·커널 실행과 JupyterLab 접속을 확인했습니다.
+
+[화면 기록](docs/assets/codex-install-and-start.gif)은 JupyterLab 터미널에서 촬영했으며, 브라우저 인증에는 검증용 로컬 도구를 사용했습니다.
+
+## 통합 테스트 재현
+
+macOS에서 저장소 루트를 기준으로 실행합니다. 개발 환경에 Jupyter 의존성을 설치하고, `JUPYTER_LIVE_TEST_PYTHON`을 지정해 세션 수명주기 검증을 포함합니다.
+
+```sh
+uv sync --group dev --python 3.12
+uv pip install --python .venv/bin/python \
+  'jupyterlab>=4,<5' \
+  'jupyter-collaboration>=4,<5' \
+  'ipykernel>=6,<8' \
+  'jupyter-mcp-server==1.1.4' \
+  'code-sandboxes==0.17.0'
+JUPYTER_LIVE_TEST_PYTHON="$PWD/.venv/bin/python" \
+  uv run --no-sync pytest -m integration
+```
+
 ## 검증 범위
 
 | 대상 | 상태 |
 | --- | --- |
 | macOS·Python 3.12의 CLI, MCP, Jupyter 실행 | 검증 완료 |
+| 수동 MCP 등록 후 Codex CLI의 환경 선택·Jupyter 실행 | 2026-10-15 검증 완료 |
 | Windows·Linux 실행 | 미검증 |
 | Codex 플러그인 설치 후 환경 선택 질문이 표시되는 UI 과정 | 미검증 |
 | GitHub Actions 실행 | 미검증. 설정은 `ci/github-actions.yml`에 템플릿으로 제공 |

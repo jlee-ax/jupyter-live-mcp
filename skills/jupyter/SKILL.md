@@ -18,7 +18,7 @@ Do not select a fixed environment name or silently fall back to another interpre
 
 ## Browser integration
 
-`session_info` returns a nonsecret `url` and a local `token_file` path. Opening JupyterLab is optional and depends on the host's available browser integration. Use the host's credential-aware local browser workflow when available. Never display, log or save the token contents or an authenticated URL in conversation, notebook source, evidence or versioned files. If secure browser handoff is unavailable, report that limitation while keeping MCP available.
+`session_info` returns a nonsecret `url` and a local `token_file` path. Opening JupyterLab depends on the host's browser integration; the server does not open a browser automatically. Use the host's credential-aware local browser workflow when available. Otherwise, provide the clean URL and token file path so the user can sign in locally. Never display, log or save the token contents or an authenticated URL in conversation, notebook source, evidence or versioned files.
 
 ## Notebook operations
 
@@ -32,6 +32,6 @@ Do not select a fixed environment name or silently fall back to another interpre
 
 ## Session lifecycle
 
-Do not restart, replace or stop a kernel or Jupyter session unless explicitly requested, or a confirmed runtime failure requires repair. Explain the repair before disrupting shared state. Closing the controller connection preserves the Jupyter process and kernel.
+Do not restart, replace or stop a kernel or Jupyter session unless explicitly requested, or a confirmed runtime failure requires repair. Explain the repair before disrupting shared state. Closing the controller connection preserves the Jupyter process and kernel. A new MCP connection does not automatically reattach the preserved session.
 
 Use `stop_session` for an explicit request to stop the connected session. To find a session left after disconnection, use `jupyter-live-mcp sessions`. Stop only the requested session with `jupyter-live-mcp stop --state-dir` and its exact listed `state_dir`.

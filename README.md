@@ -4,23 +4,30 @@
 
 기존 가상환경을 사용하거나 새 환경을 생성하고, 필요한 Jupyter 의존성을 설치할 수 있습니다.
 
-![터미널 설치 → Codex에서 Python 환경 선택 → JupyterLab 실행](docs/assets/codex-install-and-start.gif)
-
-두 명령으로 설치·등록한 뒤, Codex에서 Python 환경을 선택해 JupyterLab을 실행하는 실제 화면입니다. 로컬 경로는 가렸습니다.
-
 ## 설치
 
-수동 설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
+설치에는 Python 3.11 이상, `uv`, Codex CLI가 필요합니다.
 
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
 ```
 
+## 사용
+
+프로젝트 디렉터리에서 Codex를 실행합니다.
+
+```sh
+codex
+```
+
+> 이 프로젝트에서 Jupyter Live를 시작하세요.
+
+Codex가 제시한 Python 환경을 선택합니다. 세션 시작 결과의 `url`로 JupyterLab에 접속하고, 로그인이 필요하면 `token_file`에 저장된 토큰을 입력합니다. 브라우저 자동 열기는 Codex의 브라우저 연동에 따릅니다.
 
 ## 아키텍처
 
-Jupyter 기동 전 사용자가 Python 환경을 선택할 수 있도록 컨트롤러를 독립된 `uv` 환경에서 실행합니다. 서버·백엔드·커널은 선택한 Python으로 기동합니다.
+Jupyter 실행 전에 Python 환경을 선택할 수 있도록 컨트롤러를 `uv`가 관리하는 도구 전용 환경에서 실행합니다. Jupyter 서버·MCP 백엔드·노트북 커널은 선택한 Python으로 실행합니다.
 
 ```mermaid
 flowchart TB
@@ -59,11 +66,11 @@ Codex에서 프로젝트의 가상환경이나 Conda 환경을 선택하거나, 
 | `jupyter-mcp-server` | `==1.1.4` |
 | `code-sandboxes` | `==0.17.0` |
 
-환경 생성과 의존성 설치는 사용자 요청에 따라 수행하며, 의존성은 선택한 환경에 설치합니다.
+선택한 환경의 의존성을 검사하고, 환경 생성과 필요한 패키지 설치는 사용자 요청에 따라 수행합니다.
 
 ## 세션 관리
 
-MCP 연결이 종료돼도 Jupyter와 커널은 유지됩니다. 실행 환경을 바꾸려면 현재 세션을 종료합니다.
+MCP 연결이 종료돼도 Jupyter와 커널은 유지됩니다. 새 MCP 연결에서 기존 세션으로 자동 재연결되지는 않습니다. 실행 환경을 바꾸려면 기존 Jupyter 세션을 종료합니다.
 
 ```sh
 jupyter-live-mcp sessions
@@ -72,7 +79,7 @@ jupyter-live-mcp stop --state-dir /path/to/session
 
 `--state-dir`에는 조회 결과의 `state_dir` 값을 지정합니다.
 
-## MCP 도구
+## 환경·세션 관리 도구
 
 | 도구 | 입력 | 기능 |
 | --- | --- | --- |
@@ -83,7 +90,6 @@ jupyter-live-mcp stop --state-dir /path/to/session
 | `start_session` | `project`, `python_path` | 세션 시작 |
 | `session_info` | 없음 | 실행 환경·커널·접속 정보 조회 |
 | `stop_session` | 없음 | 현재 세션 종료 |
-
 
 ## 개발 및 검증
 
@@ -98,13 +104,7 @@ uv run pytest -m 'not integration'
 uv build --wheel
 ```
 
-통합 테스트는 개발 환경에 분석용 의존성을 설치한 뒤 실행합니다.
-
-```sh
-uv run --no-sync pytest -m integration
-```
-
-실행 검증 환경은 macOS·Python 3.12입니다. 결과는 [검증 기록](VERIFICATION.md), GitHub Actions 설정은 [CI 템플릿](ci/github-actions.yml)을 참고하세요.
+통합 테스트 준비·실행 방법과 검증 범위는 [검증 기록](VERIFICATION.md)을 참고하세요. GitHub Actions 설정은 [CI 템플릿](ci/github-actions.yml)으로 제공합니다.
 
 ## 라이선스
 
