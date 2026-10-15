@@ -15,7 +15,6 @@ JupyterLab 터미널에서 설치·가상환경 구성 후 노트북을 실행�
 ```sh
 uv tool install git+https://github.com/jlee-ax/jupyter-live-mcp@main
 codex mcp add jupyterLive -- jupyter-live-mcp serve
-codex mcp list
 ```
 
 
